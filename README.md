@@ -35,12 +35,14 @@ LINE BotとSwitchBotスマートロックを連携させ、LINEのトーク画�
 ```bash
 sudo git clone [https://github.com/your-username/door-lock-kun.git](https://github.com/your-username/door-lock-kun.git)
 cd door-lock-kun
+```
 
 ### 2. 実行権限の付与とスクリプトの実行
 
 ```bash
 sudo chmod +x setup.sh
 ./setup.sh
+```
 
 ### 3. 環境変数（.env）の設定
 
@@ -48,6 +50,7 @@ sudo chmod +x setup.sh
 
 ```bash
 sudo nano .env
+```
 
 ```bash
 LINE_CHANNEL_ACCESS_TOKEN=your_line_channel_access_token
@@ -64,6 +67,7 @@ DEVICE_ID=your_switchbot_lock_device_id
 HUB_DEVICE_ID=your_switchbot_hub_device_id
 
 AUTH_SECRET_KEY=your_static_secret_key
+```
 
 ###4. SwitchBot Webhook の登録 & サービスの再起動
 顔認証パッドや手動操作の検知イベントを受信するため、一度だけWebhook登録を行います。
@@ -71,9 +75,11 @@ AUTH_SECRET_KEY=your_static_secret_key
 ```bash
 # Webhook登録
 ./venv/bin/python3 register_webhook.py
-
+```
 # 設定反映のためサービスを再起動
+```bash
 sudo systemctl restart switchbot.service
+```
 
 | コマンド | 説明 |
 | :--- | :--- |
