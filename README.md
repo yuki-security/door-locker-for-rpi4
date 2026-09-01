@@ -76,6 +76,7 @@ AUTH_SECRET_KEY=your_static_secret_key
 # Webhook登録
 ./venv/bin/python3 register_webhook.py
 ```
+
 # 設定反映のためサービスを再起動
 ```bash
 sudo systemctl restart switchbot.service
