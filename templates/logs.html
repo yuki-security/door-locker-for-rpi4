@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ドアロックくん - 操作ログ</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 24px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 16px;
+    }
+    h1 { font-size: 22px; color: #38bdf8; margin: 0; }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+    .card-title { font-size: 16px; font-weight: 600; color: #cbd5e1; margin-bottom: 12px; }
+    .user-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .user-chip {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+    .no-users { font-size: 13px; color: #64748b; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+    th { background: #0f172a; color: #94a3b8; padding: 12px; border-bottom: 2px solid #334155; }
+    td { padding: 12px; border-bottom: 1px solid #334155; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; }
+    .badge-unlock { background: #059669; color: #ecfdf5; }
+    .badge-lock { background: #475569; color: #f8fafc; }
+    .badge-follow { background: #0284c7; color: #f0f9ff; }
+    .badge-approve { background: #7c3aed; color: #f5f3ff; }
+    .badge-reject { background: #dc2626; color: #fef2f2; }
+    .badge-info { background: #334155; color: #cbd5e1; }
+    .timestamp { color: #64748b; font-size: 13px; white-space: nowrap; }
+    .message-cell { word-break: break-all; }
+    .btn-reload {
+      background: #38bdf8;
+      color: #0f172a;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🔑 ドアロックくん 操作・アクセスログ</h1>
+    <button class="btn-reload" onclick="location.reload()">🔄 手動更新</button>
+  </header>
+  <div class="card">
+    <div class="card-title">👥 現在開錠許可されているユーザー（メモリ内）</div>
+    <div class="user-tags">
+      {% if authenticated_users %}
+        {% for uid in authenticated_users %}
+          <span class="user-chip">ID: {{ uid[:12] }}...</span>
+        {% endfor %}
+      {% else %}
+        <span class="no-users">現在、承認済みのユーザーはいません（再起動でリセットされます）。</span>
+      {% endif %}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📜 アクティビティ履歴（最新100件）</div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 180px;">日時</th>
+            <th style="width: 120px;">種別</th>
+            <th>詳細</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+          <tr>
+            <td class="timestamp">{{ log.time }}</td>
+            <td>
+              {% if 'UNLOCK' in log.msg or 'Approved' in log.msg or '開けた' in log.msg %}
+                <span class="badge badge-unlock">🔓 開錠</span>
+              {% elif 'LOCK' in log.msg or '閉めた' in log.msg %}
+                <span class="badge badge-lock">🔒 施錠</span>
+              {% elif 'Follower' in log.msg %}
+                <span class="badge badge-follow">👤 友だち追加</span>
+              {% elif 'Rejected' in log.msg %}
+                <span class="badge badge-reject">❌ 拒否</span>
+              {% else %}
+                <span class="badge badge-info">ℹ 情報</span>
+              {% endif %}
+            </td>
+            <td class="message-cell">{{ log.msg }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="3" style="text-align: center; color: #64748b; padding: 20px;">ログデータがありません。</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>setTimeout(() => location.reload(), 10000);</script>
+</body>
+</html>
