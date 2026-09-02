@@ -1,0 +1,13 @@
+[Unit]
+Description=ngrok tunnel for Door Locker (port 5000)
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+ExecStart=/usr/local/bin/ngrok http 5000 --url=YOUR_STATIC_DOMAIN.ngrok-free.dev
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
